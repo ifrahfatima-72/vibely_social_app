@@ -26,7 +26,7 @@ A full-stack Instagram-style social app — profiles, posts with images, comment
 ## Project Structure
 
 ```
-vibely/
+SOCIAL-APP/
 ├── backend/
 │   ├── config/db.js          # MySQL connection
 │   ├── models/                # User, Post, Comment, Follow, FollowRequest, Like, Story, StoryView
