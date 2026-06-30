@@ -1,19 +1,17 @@
 # 𝜗ৎ Vibely
 
-A full-stack Instagram-style social media app — profiles, posts with images, comments, likes, a follow-request system, 24-hour stories, and real-time-feeling notifications.
+A full-stack Instagram-style social app — profiles, posts with images, comments, likes, follow requests, 24-hour stories, and notifications.
 
 ## Features
 
-- **Auth** — register/login with JWT, bcrypt-hashed passwords
-- **Profiles** — avatar upload, bio, website, post grid
-- **Posts** — text and/or image posts, like/unlike (persisted per user, no duplicate likes), comments
-- **Follow requests** — send a request, recipient accepts or declines from a Notifications page before you start following
-- **Followers/Following lists** — clickable, opens a modal showing each list
-- **Post detail view** — click any post to see full image, all comments, and who liked it
-- **Stories** — image stories that auto-expire and are deleted (file + DB row) after 24 hours, with a "seen by" viewer list, manual delete option, tap-through viewer with progress bars
-- **Notifications** — bell icon badge showing pending follow request count
-- **Search** — find users by username
-- **Dark/light theme toggle**
+- JWT auth with bcrypt-hashed passwords
+- Profiles with avatar upload, bio, website, post grid
+- Posts (text/image), persisted likes (no duplicates), comments
+- Follow requests — recipient accepts/declines before following begins
+- Followers/Following lists, clickable post detail view (likes + comments)
+- Stories — auto-delete after 24h (DB row + image file), "seen by" list, manual delete
+- Notification badge for pending follow requests
+- User search, dark/light theme toggle
 
 ## Tech Stack
 
@@ -21,66 +19,48 @@ A full-stack Instagram-style social media app — profiles, posts with images, c
 |---|---|
 | Frontend | React (Vite), React Router, Axios, react-icons |
 | Backend | Express.js |
-| Database | MySQL via Sequelize ORM |
+| Database | MySQL + Sequelize |
 | Auth | JWT + bcryptjs |
-| File uploads | Multer |
+| Uploads | Multer |
 
 ## Project Structure
 
 ```
 vibely/
 ├── backend/
-│   ├── config/db.js              # Sequelize/MySQL connection
-│   ├── models/                   # User, Post, Comment, Follow, FollowRequest, Like, Story, StoryView
-│   ├── routes/                   # auth, posts, comments, users, followRequests, stories
-│   ├── middleware/                # authMiddleware (JWT), upload (multer)
-│   ├── utils/storyCleanup.js     # hourly job that deletes expired stories
-│   ├── uploads/                  # uploaded images (gitignored)
+│   ├── config/db.js          # MySQL connection
+│   ├── models/                # User, Post, Comment, Follow, FollowRequest, Like, Story, StoryView
+│   ├── routes/                # auth, posts, comments, users, followRequests, stories
+│   ├── middleware/            # authMiddleware, upload
+│   ├── utils/storyCleanup.js  # hourly job that deletes expired stories
+│   ├── uploads/                # gitignored
 │   ├── server.js
-│   └── .env                      # not committed — see .env.example
+│   └── .env
 └── frontend/
     └── src/
-        ├── pages/                # Login, Register, Feed, Profile, Notifications
-        ├── components/           # Navbar, PostCard, PostModal, CommentBox, CreatePost,
-        │                         # StoryBar, StoryViewer, FollowListModal
+        ├── pages/              # Login, Register, Feed, Profile, Notifications
+        ├── components/         # Navbar, PostCard, PostModal, CommentBox, CreatePost,
+        │                       # StoryBar, StoryViewer, FollowListModal
         ├── context/ThemeContext.jsx
         └── index.css
 ```
 
 ## Setup
 
-### Prerequisites
-- Node.js (v18+ recommended)
-- MySQL Server running locally (or remotely)
-
-### 1. Clone and install
+**Prerequisites:** Node.js 18+, MySQL Server running locally.
 
 ```bash
 git clone https://github.com/<your-username>/vibely.git
-cd vibely
-
-cd backend
-npm install
-
-cd ../frontend
-npm install
+cd vibely/backend && npm install
+cd ../frontend && npm install
 ```
 
-### 2. Create the database
-
+Create the database:
 ```sql
 CREATE DATABASE social_app;
 ```
 
-### 3. Configure environment variables
-
-In `backend/`, copy `.env.example` to `.env` and fill in your own values:
-
-```bash
-cd backend
-cp .env.example .env
-```
-
+In `backend/`, create `.env`:
 ```env
 DB_HOST=localhost
 DB_USER=root
@@ -89,33 +69,19 @@ DB_NAME=social_app
 JWT_SECRET=replace_with_a_long_random_string
 PORT=5000
 ```
+> Wrap the password in double quotes if it contains special characters like `#`.
 
-> If your MySQL password contains special characters like `#`, wrap it in double quotes as shown above.
-
-### 4. Run the backend
-
+Run the backend (tables auto-create on first run):
 ```bash
 cd backend
 node server.js
 ```
 
-Tables are auto-created/synced on first run via `sequelize.sync({ alter: true })`. You should see:
-
-```
-✅ Database connected & synced!
-🚀 Server running on port 5000
-```
-
-### 5. Run the frontend
-
-In a separate terminal:
-
+Run the frontend in a separate terminal:
 ```bash
 cd frontend
 npm run dev
 ```
-
-Open the printed local URL (typically `http://localhost:5173`).
 
 ## API Overview
 
@@ -134,10 +100,10 @@ Open the printed local URL (typically `http://localhost:5173`).
 
 ## Notes
 
-- Images are served statically from `backend/uploads/` at `/uploads/<filename>`.
-- Stories are cleaned up automatically once an hour (and on server startup) by `utils/storyCleanup.js`, which deletes both the database row and the image file once `expiresAt` has passed.
-- The frontend currently points to `http://localhost:5000` directly in API calls — if deploying, replace these with an environment variable (e.g. `VITE_API_URL`).
+- Images served from `backend/uploads/` at `/uploads/<filename>`.
+- A schema-only reference dump is at `backend/schema.sql` (no data).
+- API base URL is hardcoded to `http://localhost:5000` in the frontend — swap for an env variable if deploying beyond local use.
 
 ## License
 
-MIT — feel free to fork and build on this.
+MIT
