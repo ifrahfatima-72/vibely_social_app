@@ -1,4 +1,4 @@
-# 🌸 Vibely
+# 𝜗ৎ Vibely
 
 A full-stack Instagram-style social media app — profiles, posts with images, comments, likes, a follow-request system, 24-hour stories, and real-time-feeling notifications.
 
@@ -69,7 +69,7 @@ npm install
 ### 2. Create the database
 
 ```sql
-CREATE DATABASE vibely;
+CREATE DATABASE social_app;
 ```
 
 ### 3. Configure environment variables
